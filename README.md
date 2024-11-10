@@ -12,7 +12,7 @@ This project is a faithful recreation of the classic puzzle RPG, **Puzzle Quest:
 
 ## Demo
 
-![Gameplay](puzzle2.png)  <!-- Substitua com o link da sua imagem -->
+![Gameplay](puzzle2.png)
 
 ## Technologies Used
 
