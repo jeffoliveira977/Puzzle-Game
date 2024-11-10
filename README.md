@@ -25,7 +25,7 @@ This project is a faithful recreation of the classic puzzle RPG, **Puzzle Quest:
 
 1. Clone the repository.
 2. Open the project in **IntelliJ IDEA**.
-3. Run the main Java file to start the game.
+3. Run the **Game** Java file to start the game.
 
 ## Installation
 
