@@ -29,11 +29,9 @@ import java.awt.image.BufferStrategy;
 import java.util.concurrent.TimeUnit;
 
 public class Game extends Canvas implements Runnable, KeyListener {
-    private static BufferStrategy bs;
     private static Thread thread;
     private static final long TIME_FRAME = 1000 / 60;
-    private static JFrame frame = null;
-    private static long lastFrameTime;
+    private static long lastTime;
     private static boolean isRunning = true;
 
     Game() {
@@ -46,16 +44,16 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
     public void run() {
         createBufferStrategy(3);
-        bs = getBufferStrategy();
+        BufferStrategy bs = getBufferStrategy();
 
         requestFocus();
 
-        lastFrameTime = System.currentTimeMillis();
-        long currentTime = System.currentTimeMillis();
+        lastTime = System.currentTimeMillis();
+        long curTime = System.currentTimeMillis();
         while (isRunning) {
             do {
                 do {
-                    long elapsedTime = currentTime - lastFrameTime;
+                    long elapsedTime = curTime - lastTime;
 
                     Graphics g = bs.getDrawGraphics();
                     render(g);
@@ -68,12 +66,12 @@ public class Game extends Canvas implements Runnable, KeyListener {
                             throw new RuntimeException("Uncaught", e);
                         }
                  
-                        currentTime = System.currentTimeMillis();
-                        elapsedTime = currentTime - lastFrameTime;
+                        curTime = System.currentTimeMillis();
+                        elapsedTime = curTime - lastTime;
 
                         double elapsed = elapsedTime / 1000.0f;
                         update(elapsed);
-                        lastFrameTime = System.currentTimeMillis();
+                        lastTime = System.currentTimeMillis();
                     }
                 } while (bs.contentsRestored());
                 bs.show();
@@ -107,7 +105,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
     public static void main(String[] args) {
         Game game = new Game();
         game.setBackground(Color.BLACK);
-        frame = new JFrame("Puzzle Quest");
+        JFrame frame = new JFrame("Puzzle Quest");
         frame.add(game);
         frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
