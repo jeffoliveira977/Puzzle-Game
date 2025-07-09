@@ -22,13 +22,11 @@
  * SOFTWARE.
  */
 
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.IntStream;
 
 class PlayerScore {
-    public Map<GemType, Integer> gemCount;
+    public Map<GemType, Integer> gemCount = new HashMap<>();
     int health;
     int maxHealth;
     boolean nextTurn;
@@ -42,7 +40,7 @@ class PlayerScore {
         for (GemType gem : GemType.values()) {
             gemCount.put(gem, 0);
         }
-        health = maxHealth = 25;
+        health = maxHealth = 50;
     }
 
     public void clearGem(GemType gem) {
@@ -54,11 +52,6 @@ class PlayerScore {
     }
 
     public int getGemCount(GemType gem) {
-        if(gemCount == null) {
-            System.out.println("getGemCount error");
-            return 0;
-        }
-
         return gemCount.get(gem);
     }
 }
