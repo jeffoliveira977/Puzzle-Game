@@ -41,7 +41,7 @@ public class Grid {
     private double animTime;
     private float selectorAlpha;
     private float messageAlpha;
-
+    static int count = 0;
     static boolean isSwappingBack;
     private boolean animateSelector;
     private boolean firstGemClicked;
@@ -99,6 +99,8 @@ public class Grid {
             e.printStackTrace();
         }
 
+        scoreBoard = new ScoreBoard();
+
         message = new Label(new Vector2i(365, 450), "No moves available", 40);
         playerWinsText = new Label(new Vector2i(106, 260), "", 62);
         restartBtn = new Button(new Vector2i(422, 420), "Restart game");
@@ -108,16 +110,24 @@ public class Grid {
         restartBtn.setCallback(() -> {
             generateGrid();
             enablePlayerWinnerDraw = false;
-            ScoreBoard.playerScore[0].restart();
+            restartBtn.disable = true;
+            scoreBoard.restart();
         });
-        scoreBoard = new ScoreBoard();
+    }
+
+    private boolean isOutOfRange(int row, int column) {
+        return row * numColumns + column > this.table.size()-1 || this.table.size() == 0;
     }
 
     private Gem getGem(Vector2i vec) {
-        return this.table.get(vec.x * numColumns + vec.y);
+        return this.getGem(vec.x, vec.y);
     }
 
     private Gem getGem(int row, int column) {
+
+        if(this.isOutOfRange(row, column))
+            return null;
+
         return this.table.get(row * numColumns + column);
     }
 
@@ -126,6 +136,7 @@ public class Grid {
     }
 
     public void generateGrid() {
+        this.table.clear();
         for (int i = 0; i < numRows; i++) {
             for (int j = 0; j < numColumns; j++) {
                 int index = MathUtils.randInt(0, GemType.values().length);
@@ -391,7 +402,6 @@ public class Grid {
     }
 
     private void destroyAllGems() {
-        System.out.println("destroyed");
         for (int i = 0; i < numRows; i++) {
             for (int j = 0; j < numColumns; j++) {
                 this.getGem(i, j).pos.x = i * (Grid.blockSize + Grid.gap);
@@ -413,7 +423,7 @@ public class Grid {
     private boolean enablePlayerWinnerDraw = false;
 
     private void drawPlayerWinner(Graphics g) {
-        if (!enablePlayerWinnerDraw)
+        if (!scoreBoard.anyPlayerWinner())
             return;
 
         g.setColor(new Color(0, 0, 0, 0.4f));
@@ -501,18 +511,19 @@ public class Grid {
             gemsReplace.clear();
         }
 
-        if (scoreBoard.anyPlayerWinner()) {
-            if (!enablePlayerWinnerDraw) {
-                this.destroyAllGems();
-                restartBtn.disable = false;
-                enablePlayerWinnerDraw = true;
-                System.out.println("destroyed gems");
-            }
+        if (scoreBoard.anyPlayerWinner() && !enablePlayerWinnerDraw) {
+            this.destroyAllGems();
+            restartBtn.disable = false;
+            enablePlayerWinnerDraw = true;
         }
     }
 
     public void render(Graphics g) {
-        table.forEach(gem -> gem.draw(g));
+        table.forEach(gem -> {
+            if(gem != null) {
+                gem.draw(g);
+            }
+        });
 
         if (firstGemSelectedCoord.x > -1 && firstGemSelectedCoord.y > -1) {
             Vector2i coords = this.getBlockPosition(firstGemSelectedCoord, selectorSprite[curSelector].size);
