@@ -23,10 +23,8 @@
  */
 
 import org.joml.Vector2i;
-
 import java.awt.*;
 import java.util.List;
-import java.util.Map;
 
 public class ScoreBoard {
     private Label gemsText;
@@ -123,6 +121,11 @@ public class ScoreBoard {
 
     public boolean anyPlayerWinner () {
         return playerScore[0].health == 0 || playerScore[1].health == 0;
+    }
+
+    public void restart () {
+        playerScore[0].restart();
+        playerScore[1].restart();
     }
 
     public void update(double dt) {
